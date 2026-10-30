@@ -84,3 +84,4 @@ spec:
             oc rollout status deployment/accounts
       runAfter:
         - buildah
+

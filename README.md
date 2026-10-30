@@ -1,6 +1,6 @@
 # CI/CD Final Project: Building and Deploying a Complete CI/CD Pipeline
 
-[![CI Workflow](https://github.com/sahil663111/ci-cd-final-project/actions/workflows/workflow.yml/badge.svg)](https://github.com/sahil663111/ci-cd-final-project/actions/workflows/workflow.yml)
+[![CI Workflow](https://github.com/sahil663111/cicd-final-project/actions/workflows/workflow.yml/badge.svg)](https://github.com/sahil663111/cicd-final-project/actions/workflows/workflow.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.9](https://img.shields.io/badge/Python-3.9-green.svg)](https://shields.io/)
 
@@ -68,3 +68,4 @@ nosetests -v --with-spec --spec-color --with-coverage --cover-package=service
 
 - **Sahil**
 - GitHub: [@sahil663111](https://github.com/sahil663111)
+

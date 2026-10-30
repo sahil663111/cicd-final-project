@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cicd-app
+  labels:
+    app: cicd-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cicd-app
+  template:
+    metadata:
+      labels:
+        app: cicd-app
+    spec:
+      containers:
+        - name: cicd-app
+          image: image-registry.openshift-image-registry.svc:5000/sn-labs-sahilnehate/cicd-app:latest
+          ports:
+            - containerPort: 8000
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cicd-app
+  labels:
+    app: cicd-app
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: http
+  selector:
+    app: cicd-app

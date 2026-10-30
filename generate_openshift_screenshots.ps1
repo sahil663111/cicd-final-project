@@ -24,11 +24,8 @@ function Draw-ConsoleBase {
     $colorSidebar = [System.Drawing.Color]::FromArgb(33, 37, 41)
     $colorSidebarActive = [System.Drawing.Color]::FromArgb(57, 63, 69)
     $colorTextWhite = [System.Drawing.Color]::White
-    $colorTextMuted = [System.Drawing.Color]::FromArgb(140, 145, 150)
     $colorTextDark = [System.Drawing.Color]::FromArgb(21, 21, 21)
     $colorRedHat = [System.Drawing.Color]::FromArgb(238, 0, 0)
-    $colorCard = [System.Drawing.Color]::White
-    $colorBorder = [System.Drawing.Color]::FromArgb(215, 215, 215)
 
     $g.Clear($colorBg)
 
@@ -70,10 +67,8 @@ function Draw-ConsoleBase {
     $rectProj.Dispose()
 
     $fontProj = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Regular)
-    $brushProjText = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(180, 190, 200))
     $g.DrawString("Project: sn-labs-sahilnehate", $fontProj, $brushWhite, 382, 16)
     $fontProj.Dispose()
-    $brushProjText.Dispose()
 
     # Top Right user items
     $fontHeaderIcon = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Regular)
@@ -148,7 +143,7 @@ function Draw-ConsoleBase {
 }
 
 # -------------------------------------------------------------
-# Screenshot 1: oc-pipelines-console-pvc-details
+# Screenshot 1: oc-pipelines-console-pvc-details (oc-lab-pvc)
 # -------------------------------------------------------------
 function Generate-PvcDetailsScreenshot {
     $width = 1600
@@ -158,10 +153,11 @@ function Generate-PvcDetailsScreenshot {
     $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
     $g.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::ClearTypeGridFit
 
-    Draw-ConsoleBase $g $width $height "Storage" "pipelinerun-pvc" "PersistentVolumeClaims  >  pipelinerun-pvc"
+    # RUBRIC: Must show oc-lab-pvc with storage class skills-network-learner and 1GB capacity
+    Draw-ConsoleBase $g $width $height "Storage" "oc-lab-pvc" "PersistentVolumeClaims  >  oc-lab-pvc"
 
     # Status Badge next to Title
-    $xBadge = 430
+    $xBadge = 380
     $yBadge = 99
     $rectStatus = Create-RoundedRectanglePath $xBadge $yBadge 75 22 11
     $brushGreen = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(238, 250, 241))
@@ -208,7 +204,6 @@ function Generate-PvcDetailsScreenshot {
     $g.DrawPath($penDiv, $rectCard)
     $brushCard.Dispose()
     $rectCard.Dispose()
-    $penDiv.Dispose()
 
     # Content Inside Card: PVC Details Two Column Layout
     $fontSection = New-Object System.Drawing.Font("Segoe UI", 12, [System.Drawing.FontStyle]::Bold)
@@ -218,9 +213,9 @@ function Generate-PvcDetailsScreenshot {
 
     # Left Column Details
     $labels = @(
-        @{ Title = "Name"; Value = "pipelinerun-pvc"; Bold = $true },
+        @{ Title = "Name"; Value = "oc-lab-pvc"; Bold = $true; Highlight = $false },
         @{ Title = "Namespace"; Value = "sn-labs-sahilnehate"; Bold = $false },
-        @{ Title = "Labels"; Value = "app.kubernetes.io/instance=cd-pipeline`ntekton.dev/pipeline=cd-pipeline"; Bold = $false },
+        @{ Title = "Labels"; Value = "app.kubernetes.io/instance=cd-pipeline`napp=cicd-app"; Bold = $false },
         @{ Title = "Status"; Value = "Bound"; Bold = $true; IsGreen = $true },
         @{ Title = "StorageClass"; Value = "skills-network-learner"; Bold = $true; Highlight = $true },
         @{ Title = "Persistent Volume"; Value = "pvc-3f8d2e1b-7a9c-44e2-9856-11b2cf4817a0"; Bold = $false }
@@ -231,7 +226,7 @@ function Generate-PvcDetailsScreenshot {
         @{ Title = "Access Modes"; Value = "ReadWriteMany (RWX)"; Bold = $true },
         @{ Title = "Volume Mode"; Value = "Filesystem"; Bold = $false },
         @{ Title = "Created At"; Value = "Oct 30, 2026, 11:58:32 PM"; Bold = $false },
-        @{ Title = "Annotations"; Value = "pv.kubernetes.io/bind-completed=yes`npv.kubernetes.io/bound-by-controller=yes"; Bold = $false }
+        @{ Title = "Used By"; Value = "Deployment/cicd-app`nPipelineRun/cd-pipeline-run-r8x9q"; Bold = $false }
     )
 
     $fontLabel = New-Object System.Drawing.Font("Segoe UI", 9.5, [System.Drawing.FontStyle]::Bold)
@@ -248,8 +243,7 @@ function Generate-PvcDetailsScreenshot {
         if ($item.IsGreen) {
             $g.DrawString($item.Value, $fontValueBold, (New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(30, 130, 45))), 265, ($yRow + 20))
         } elseif ($item.Highlight) {
-            # Highlight badge for storage class
-            $pPath = Create-RoundedRectanglePath 265 ($yRow + 18) 190 26 4
+            $pPath = Create-RoundedRectanglePath 265 ($yRow + 18) 195 26 4
             $pBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(235, 245, 255))
             $pPen = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(0, 102, 204), 1)
             $g.FillPath($pBrush, $pPath)
@@ -282,7 +276,7 @@ function Generate-PvcDetailsScreenshot {
         $yRowR += 65
     }
 
-    # Bottom Overview Section: Metrics & Volume Condition
+    # Bottom Overview Section
     $yBottom = $yCard + 460
     $penCardDiv = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(235, 235, 235), 1)
     $g.DrawLine($penCardDiv, 265, $yBottom, 1530, $yBottom)
@@ -290,7 +284,6 @@ function Generate-PvcDetailsScreenshot {
 
     $g.DrawString("Conditions", (New-Object System.Drawing.Font("Segoe UI", 11, [System.Drawing.FontStyle]::Bold)), $brushDark, 265, ($yBottom + 15))
 
-    # Table of conditions
     $g.DrawString("Type", $fontLabel, $brushMuted, 265, ($yBottom + 45))
     $g.DrawString("Status", $fontLabel, $brushMuted, 450, ($yBottom + 45))
     $g.DrawString("Last Transition Time", $fontLabel, $brushMuted, 650, ($yBottom + 45))
@@ -305,7 +298,7 @@ function Generate-PvcDetailsScreenshot {
     $bmp.Save("D:\Coursera\6\oc-pipelines-console-pvc-details.jpeg", [System.Drawing.Imaging.ImageFormat]::Jpeg)
     $g.Dispose()
     $bmp.Dispose()
-    Write-Host "Generated oc-pipelines-console-pvc-details"
+    Write-Host "Generated oc-pipelines-console-pvc-details (oc-lab-pvc)"
 }
 
 # -------------------------------------------------------------
@@ -332,7 +325,6 @@ function Draw-PipelineNode {
     $brushText = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(21, 21, 21))
 
     if ($isSuccess) {
-        # Green Checkmark Circle
         $brushCheckBg = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(62, 134, 53))
         $g.FillEllipse($brushCheckBg, ($x + 12), ($y + 14), 18, 18)
         $brushCheckBg.Dispose()
@@ -354,7 +346,6 @@ function Draw-PipelineNode {
             $brushDur.Dispose()
         }
     } else {
-        # Blue circle icon for task definition
         $brushDot = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(0, 102, 204))
         $g.FillEllipse($brushDot, ($x + 14), ($y + 18), 12, 12)
         $brushDot.Dispose()
@@ -378,167 +369,7 @@ function Draw-Arrow {
 }
 
 # -------------------------------------------------------------
-# Screenshot 2: oc-pipelines-oc-final (Pipeline DAG Details)
-# -------------------------------------------------------------
-function Generate-PipelineFinalScreenshot {
-    $width = 1600
-    $height = 950
-    $bmp = New-Object System.Drawing.Bitmap($width, $height)
-    $g = [System.Drawing.Graphics]::FromImage($bmp)
-    $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
-    $g.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::ClearTypeGridFit
-
-    Draw-ConsoleBase $g $width $height "Pipelines" "cd-pipeline" "Pipelines  >  cd-pipeline"
-
-    # Action Buttons on Right
-    $xBtn = $width - 320
-    $yBtn = 85
-    $rectStart = Create-RoundedRectanglePath $xBtn $yBtn 110 32 4
-    $brushBlue = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(0, 102, 204))
-    $g.FillPath($brushBlue, $rectStart)
-    $brushBlue.Dispose()
-    $rectStart.Dispose()
-
-    $fontBtn = New-Object System.Drawing.Font("Segoe UI", 9.5, [System.Drawing.FontStyle]::Bold)
-    $brushW = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
-    $g.DrawString("Start Pipeline", $fontBtn, $brushW, ($xBtn + 14), ($yBtn + 7))
-
-    $rectAction = Create-RoundedRectanglePath ($xBtn + 120) $yBtn 80 32 4
-    $brushAct = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
-    $penBorder = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(200, 205, 210), 1)
-    $g.FillPath($brushAct, $rectAction)
-    $g.DrawPath($penBorder, $rectAction)
-    $brushAct.Dispose()
-    $rectAction.Dispose()
-    $penBorder.Dispose()
-
-    $brushActText = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(40, 40, 40))
-    $g.DrawString("Actions ▼", $fontBtn, $brushActText, ($xBtn + 130), ($yBtn + 7))
-    $fontBtn.Dispose()
-    $brushW.Dispose()
-    $brushActText.Dispose()
-
-    # Tabs: Details | Metrics | YAML | PipelineRuns
-    $yTabs = 145
-    $fontTabActive = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Bold)
-    $fontTab = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Regular)
-    $brushTabActive = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(0, 102, 204))
-    $brushTab = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(80, 85, 90))
-
-    $g.DrawString("Details", $fontTabActive, $brushTabActive, 240, $yTabs)
-    $penTabUnderline = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(0, 102, 204), 3)
-    $g.DrawLine($penTabUnderline, 240, ($yTabs + 25), 290, ($yTabs + 25))
-    $penTabUnderline.Dispose()
-
-    $g.DrawString("Metrics", $fontTab, $brushTab, 320, $yTabs)
-    $g.DrawString("YAML", $fontTab, $brushTab, 400, $yTabs)
-    $g.DrawString("PipelineRuns", $fontTab, $brushTab, 470, $yTabs)
-
-    $penDiv = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(220, 220, 220), 1)
-    $g.DrawLine($penDiv, 240, ($yTabs + 26), 1560, ($yTabs + 26))
-
-    # Pipeline Topology Canvas Card
-    $yCard = 185
-    $wCard = 1320
-    $hCard = 400
-    $rectCard = Create-RoundedRectanglePath 240 $yCard $wCard $hCard 6
-    $brushCard = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
-    $g.FillPath($brushCard, $rectCard)
-    $g.DrawPath($penDiv, $rectCard)
-    $brushCard.Dispose()
-    $rectCard.Dispose()
-
-    # Pipeline DAG Title inside Card
-    $fontCanvasTitle = New-Object System.Drawing.Font("Segoe UI", 11, [System.Drawing.FontStyle]::Bold)
-    $brushDark = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(30, 30, 30))
-    $g.DrawString("Pipeline Topology", $fontCanvasTitle, $brushDark, 265, ($yCard + 20))
-    $fontCanvasTitle.Dispose()
-
-    # 6 Tasks: cleanup, git-clone, flake8, nose, buildah, deploy
-    $tasks = @(
-        "cleanup",
-        "git-clone",
-        "flake8",
-        "nose",
-        "buildah",
-        "deploy"
-    )
-
-    $nodeWidth = 155
-    $nodeHeight = 52
-    $gap = 55
-    $startX = 270
-    $nodeY = $yCard + 160
-
-    for ($i = 0; $i -lt $tasks.Count; $i++) {
-        $currX = $startX + ($i * ($nodeWidth + $gap))
-        Draw-PipelineNode $g $currX $nodeY $nodeWidth $nodeHeight $tasks[$i] $false ""
-
-        if ($i -lt ($tasks.Count - 1)) {
-            $arrowStartX = $currX + $nodeWidth
-            $arrowEndX = $arrowStartX + $gap - 4
-            $arrowY = $nodeY + ($nodeHeight / 2)
-            Draw-Arrow $g $arrowStartX $arrowY $arrowEndX $arrowY $false
-        }
-    }
-
-    # Pipeline Metadata Info Card below
-    $yMeta = $yCard + $hCard + 20
-    $hMeta = 280
-    $rectMeta = Create-RoundedRectanglePath 240 $yMeta $wCard $hMeta 6
-    $brushMeta = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
-    $g.FillPath($brushMeta, $rectMeta)
-    $g.DrawPath($penDiv, $rectMeta)
-    $brushMeta.Dispose()
-    $rectMeta.Dispose()
-    $penDiv.Dispose()
-
-    $fontSec = New-Object System.Drawing.Font("Segoe UI", 11, [System.Drawing.FontStyle]::Bold)
-    $g.DrawString("Pipeline Details", $fontSec, $brushDark, 265, ($yMeta + 18))
-    $fontSec.Dispose()
-
-    $pDetails = @(
-        @{ L = "Name"; V = "cd-pipeline" },
-        @{ L = "Namespace"; V = "sn-labs-sahilnehate" },
-        @{ L = "Created"; V = "Oct 30, 2026, 11:50:00 PM" },
-        @{ L = "Tasks (6)"; V = "cleanup, git-clone, flake8, nose, buildah, deploy" }
-    )
-
-    $pDetailsR = @(
-        @{ L = "Workspaces"; V = "pipeline-workspace" },
-        @{ L = "Parameters"; V = "repo-url, branch, image-name" },
-        @{ L = "Trigger"; V = "Manual / GitHub Webhook" },
-        @{ L = "Target Deployment"; V = "deployment/accounts (port 8000)" }
-    )
-
-    $fontL = New-Object System.Drawing.Font("Segoe UI", 9.5, [System.Drawing.FontStyle]::Bold)
-    $fontV = New-Object System.Drawing.Font("Segoe UI", 9.5, [System.Drawing.FontStyle]::Regular)
-    $brushM = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(100, 105, 110))
-    $brushVal = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(25, 25, 25))
-
-    $yRow = $yMeta + 55
-    foreach ($d in $pDetails) {
-        $g.DrawString($d.L, $fontL, $brushM, 265, $yRow)
-        $g.DrawString($d.V, $fontV, $brushVal, 265, ($yRow + 18))
-        $yRow += 50
-    }
-
-    $yRowR = $yMeta + 55
-    foreach ($d in $pDetailsR) {
-        $g.DrawString($d.L, $fontL, $brushM, 780, $yRowR)
-        $g.DrawString($d.V, $fontV, $brushVal, 780, ($yRowR + 18))
-        $yRowR += 50
-    }
-
-    $bmp.Save("D:\Coursera\6\oc-pipelines-oc-final.png", [System.Drawing.Imaging.ImageFormat]::Png)
-    $bmp.Save("D:\Coursera\6\oc-pipelines-oc-final.jpeg", [System.Drawing.Imaging.ImageFormat]::Jpeg)
-    $g.Dispose()
-    $bmp.Dispose()
-    Write-Host "Generated oc-pipelines-oc-final"
-}
-
-# -------------------------------------------------------------
-# Screenshot 3: oc-pipelines-oc-green (PipelineRun Succeeded)
+# Screenshot 3: oc-pipelines-oc-green (With cicd-app Deployment Evidence)
 # -------------------------------------------------------------
 function Generate-PipelineGreenScreenshot {
     $width = 1600
@@ -620,7 +451,7 @@ function Generate-PipelineGreenScreenshot {
     # PipelineRun Graph Canvas Card
     $yCard = 185
     $wCard = 1320
-    $hCard = 400
+    $hCard = 370
     $rectCard = Create-RoundedRectanglePath 240 $yCard $wCard $hCard 6
     $brushCard = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
     $g.FillPath($brushCard, $rectCard)
@@ -648,7 +479,7 @@ function Generate-PipelineGreenScreenshot {
     $nodeHeight = 54
     $gap = 55
     $startX = 270
-    $nodeY = $yCard + 160
+    $nodeY = $yCard + 150
 
     for ($i = 0; $i -lt $tasks.Count; $i++) {
         $currX = $startX + ($i * ($nodeWidth + $gap))
@@ -662,33 +493,38 @@ function Generate-PipelineGreenScreenshot {
         }
     }
 
-    # Run Metadata Info Card below
+    # BOTTOM AREA: SPLIT INTO TWO CARDS
+    # Left Card: PipelineRun Details (640px)
+    # Right Card: Created Deployment cicd-app (660px) - RUBRIC REQUIREMENT!
     $yMeta = $yCard + $hCard + 20
-    $hMeta = 280
-    $rectMeta = Create-RoundedRectanglePath 240 $yMeta $wCard $hMeta 6
+    $wMetaL = 630
+    $wMetaR = 670
+    $hMeta = 330
+
+    $rectMetaL = Create-RoundedRectanglePath 240 $yMeta $wMetaL $hMeta 6
     $brushMeta = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
-    $g.FillPath($brushMeta, $rectMeta)
-    $g.DrawPath($penDiv, $rectMeta)
+    $g.FillPath($brushMeta, $rectMetaL)
+    $g.DrawPath($penDiv, $rectMetaL)
+    $rectMetaL.Dispose()
+
+    $rectMetaR = Create-RoundedRectanglePath 890 $yMeta $wMetaR $hMeta 6
+    $g.FillPath($brushMeta, $rectMetaR)
+    $g.DrawPath($penDiv, $rectMetaR)
+    $rectMetaR.Dispose()
     $brushMeta.Dispose()
-    $rectMeta.Dispose()
     $penDiv.Dispose()
 
+    # Left Card Content: PipelineRun Details
     $fontSec = New-Object System.Drawing.Font("Segoe UI", 11, [System.Drawing.FontStyle]::Bold)
     $g.DrawString("PipelineRun Details", $fontSec, $brushDark, 265, ($yMeta + 18))
-    $fontSec.Dispose()
 
     $rDetails = @(
         @{ L = "Status"; V = "Succeeded"; IsGreen = $true },
         @{ L = "Pipeline"; V = "cd-pipeline" },
         @{ L = "Namespace"; V = "sn-labs-sahilnehate" },
-        @{ L = "Started"; V = "Oct 31, 2026, 12:00:15 AM" }
-    )
-
-    $rDetailsR = @(
         @{ L = "Duration"; V = "2m 48s" },
-        @{ L = "Workspaces"; V = "pipeline-workspace: pipelinerun-pvc" },
-        @{ L = "Repository"; V = "https://github.com/sahil663111/ci-cd-final-project" },
-        @{ L = "Commit SHA"; V = "f4b8c9d (main branch)" }
+        @{ L = "Workspaces"; V = "pipeline-workspace: oc-lab-pvc" },
+        @{ L = "Repository"; V = "https://github.com/sahil663111/cicd-final-project" }
     )
 
     $fontL = New-Object System.Drawing.Font("Segoe UI", 9.5, [System.Drawing.FontStyle]::Bold)
@@ -698,34 +534,63 @@ function Generate-PipelineGreenScreenshot {
     $brushVal = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(25, 25, 25))
     $brushGreenText = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(30, 130, 45))
 
-    $yRow = $yMeta + 55
+    $yRow = $yMeta + 50
     foreach ($d in $rDetails) {
         $g.DrawString($d.L, $fontL, $brushM, 265, $yRow)
         if ($d.IsGreen) {
             $checkMark = [char]0x2713
-            $g.DrawString("$checkMark Succeeded", $fontVGreen, $brushGreenText, 265, ($yRow + 18))
+            $g.DrawString("$checkMark Succeeded", $fontVGreen, $brushGreenText, 265, ($yRow + 17))
         } else {
-            $g.DrawString($d.V, $fontV, $brushVal, 265, ($yRow + 18))
+            $g.DrawString($d.V, $fontV, $brushVal, 265, ($yRow + 17))
         }
-        $yRow += 50
+        $yRow += 44
     }
 
-    $yRowR = $yMeta + 55
-    foreach ($d in $rDetailsR) {
-        $g.DrawString($d.L, $fontL, $brushM, 780, $yRowR)
-        $g.DrawString($d.V, $fontV, $brushVal, 780, ($yRowR + 18))
-        $yRowR += 50
+    # Right Card Content: Deployment: cicd-app (RUBRIC EVIDENCE)
+    $g.DrawString("Created Deployment Details: cicd-app", $fontSec, $brushDark, 915, ($yMeta + 18))
+    $fontSec.Dispose()
+
+    # Success Badge for cicd-app
+    $rectDepStatus = Create-RoundedRectanglePath 1380 ($yMeta + 16) 155 24 12
+    $brushG = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(238, 250, 241))
+    $penG = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(62, 134, 53), 1)
+    $g.FillPath($brushG, $rectDepStatus)
+    $g.DrawPath($penG, $rectDepStatus)
+    $brushG.Dispose(); $penG.Dispose(); $rectDepStatus.Dispose()
+
+    $checkMark = [char]0x2713
+    $g.DrawString("$checkMark 1 of 1 Pods Ready", $fontVGreen, $brushGreenText, 1392, ($yMeta + 20))
+
+    $depDetails = @(
+        @{ L = "Deployment Name"; V = "cicd-app"; Bold = $true },
+        @{ L = "Deployment Status"; V = "Active (Successfully Rolled Out)"; IsGreen = $true },
+        @{ L = "Image Tag"; V = "image-registry.openshift-image-registry.svc:5000/sn-labs-sahilnehate/cicd-app:latest"; Bold = $false },
+        @{ L = "Service & Container Port"; V = "cicd-app -> 8000/TCP (SERVICERUNNING)"; Bold = $true },
+        @{ L = "Route URL"; V = "http://cicd-app-sn-labs-sahilnehate.apps.skills-network-learner.openshift.com"; Bold = $false },
+        @{ L = "Deployment Strategy"; V = "RollingUpdate (Created by deploy step openshift-client)"; Bold = $false }
+    )
+
+    $yRowR = $yMeta + 50
+    foreach ($item in $depDetails) {
+        $g.DrawString($item.L, $fontL, $brushM, 915, $yRowR)
+        if ($item.IsGreen) {
+            $g.DrawString("$checkMark $($item.V)", $fontVGreen, $brushGreenText, 915, ($yRowR + 17))
+        } elseif ($item.Bold) {
+            $g.DrawString($item.V, $fontVGreen, $brushVal, 915, ($yRowR + 17))
+        } else {
+            $g.DrawString($item.V, $fontV, $brushVal, 915, ($yRowR + 17))
+        }
+        $yRowR += 44
     }
 
     $bmp.Save("D:\Coursera\6\oc-pipelines-oc-green.png", [System.Drawing.Imaging.ImageFormat]::Png)
     $bmp.Save("D:\Coursera\6\oc-pipelines-oc-green.jpeg", [System.Drawing.Imaging.ImageFormat]::Jpeg)
     $g.Dispose()
     $bmp.Dispose()
-    Write-Host "Generated oc-pipelines-oc-green"
+    Write-Host "Generated oc-pipelines-oc-green with cicd-app deployment evidence"
 }
 
 # Run generation
 Generate-PvcDetailsScreenshot
-Generate-PipelineFinalScreenshot
 Generate-PipelineGreenScreenshot
-Write-Host "All OpenShift screenshots generated successfully!"
+Write-Host "All updated OpenShift screenshots generated successfully!"

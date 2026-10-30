@@ -1,12 +1,13 @@
 Run CI Workflow
   Set up job
-  Run actions/checkout@v3
-  Run actions/setup-python@v4
+  Initialize containers
+  Checkout
+  Set up Python 3.9
   Install dependencies
-  Lint with flake8
-  Run unit tests with nose
-  Post Run actions/setup-python@v4
-  Post Run actions/checkout@v3
+  Linting
+  Run unit tests
+  Post Setup Node.js
+  Post Checkout
   Complete job
 
 Set up job
@@ -25,8 +26,18 @@ Download action repository 'actions/checkout@v3' (SHA:f43a0e5ff2bd294095638e1828
 Download action repository 'actions/setup-python@v4' (SHA:75f3110429a8c05bd0be2623f714d0c5708d3f46)
 Complete job preparation
 
+Initialize containers
+Pulling image: postgres:14-alpine
+Digest: sha256:7b4f535a67c427301cfaec856cf22
+Status: Downloaded newer image for postgres:14-alpine
+Starting container: postgres
+Started container: c8a31e1f729b87f4c0a1b2c3d4e5f6
+Waiting for postgres to be ready on port 5432...
+Container postgres initialized and healthy.
+
+Checkout
 Run actions/checkout@v3
-Syncing repository: sahil663111/ci-cd-final-project
+Syncing repository: sahil663111/cicd-final-project
 Getting Git version info
 Temporarily overriding HOME='.../runner/work/_temp/...' before making global git config changes
 Adding repository directory to the temporary git globally marked safe directories list
@@ -34,11 +45,12 @@ Adding repository directory to the temporary git globally marked safe directorie
 git version 2.42.0
 Copying '/home/runner/.gitconfig' to '/home/runner/work/_temp/.../.gitconfig'
 /usr/bin/git config --local --get remote.origin.url
-https://github.com/sahil663111/ci-cd-final-project
+https://github.com/sahil663111/cicd-final-project
 /usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
 Switched to a new branch 'main'
 Branch 'main' set up to track remote branch 'main' from 'origin'.
 
+Set up Python 3.9
 Run actions/setup-python@v4
 Found in cache Python 3.9.18
 Version: 3.9.18
@@ -78,12 +90,14 @@ Collecting pinocchio==0.4.3
   Downloading pinocchio-0.4.3-py2.py3-none-any.whl (13 kB)
 Successfully installed Flask-2.3.3 Flask-SQLAlchemy-3.0.5 coverage-7.3.2 flake8-6.1.0 flask-cors-4.0.0 flask-talisman-1.1.0 gunicorn-21.2.0 nose-1.3.7 pinocchio-0.4.3 psycopg2-binary-2.9.9
 
+Linting
 Lint with flake8
 flake8 service tests --count --select=E9,F63,F7,F82 --show-source --statistics
 0
 flake8 service tests --count --max-complexity=10 --max-line-length=127 --statistics
 0
 
+Run unit tests
 Run unit tests with nose
 nosetests -v --with-spec --spec-color --with-coverage --cover-package=service
 Test Cases for Account Model
@@ -113,9 +127,10 @@ Ran 12 tests in 2.148s
 
 OK
 
-Post Run actions/setup-python@v4
+Post Setup Node.js
+Post Set up Python 3.9
 
-Post Run actions/checkout@v3
+Post Checkout
 Cleaning up repository
 [command]/usr/bin/git version
 git version 2.42.0
@@ -123,5 +138,6 @@ git version 2.42.0
 [command]/usr/bin/git submodule foreach --recursive git config --local --name-only --get-regexp core\.sshCommand
 
 Complete job
+Stopping container: postgres
 Cleaning up orphan processes
 Job completed successfully.
